@@ -9,6 +9,7 @@ setwd("F:/MSc Ecology & Data Science Research")
 fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
   needed_cols <- c("sound.files", "selec", "start", "end", "domain", "label", "path", "Common.Name")
   # some columns might be missing in the noise df. Create respective columns and fill them with NA character
+  # e.g. Pool_dartmoor_noise
   for (col in needed_cols) if (!col %in% names(df)) df[[col]] <- NA_character_
   df$sound.files   <- as.character(df$sound.files)
   df$selec         <- as.character(df$selec)
@@ -189,5 +190,6 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
 
 
