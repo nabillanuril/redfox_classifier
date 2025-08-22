@@ -26,13 +26,16 @@ slice_clip_train_dr
 Curate and clip training data from Dartmoor (including augmented Dartmoor recordings).
 
 slice_clip_train_xc
-Curate and clip training data from xeno-canto recordings.
+Curate and clip training data from Xeno-Canto recordings.
 
 sample_distribution (optional)
 Visualise sample distributions.
 
-result_visualisation
+result&stats
 Visualise model performance comparisons.
 
 load_evaluation metrics
 Load/visualise evaluation metrics and run statistical tests.
+
+map
+visualise biophone deployment points
