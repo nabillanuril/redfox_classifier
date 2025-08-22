@@ -232,7 +232,7 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=8) %>%
   slice_sample(n = 120)
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
          path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_strong_call")
@@ -261,3 +261,4 @@ sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) 
 selection_table(sampled_noise, path = path_noise)
 cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_lowsnr_strong/Noise")
+
