@@ -277,7 +277,6 @@ seltab_noise_bl <- mapply(raven2warbleR, file_paths, sound_files,
 
 seltab_noise_bl <- lapply(seltab_noise_bl, function(df) {
   for (col in cols_to_fix) {
-    if (!col %in% names(df)) df[[col]] <- rep(NA_character_, nrow(df))
     df[[col]] <- as.character(df[[col]])
   }
   df
@@ -340,4 +339,5 @@ dartmoor_noise <- seltab_noise_dr %>%
   mutate(channel = 1,
          clip.files = sound.files,
          sound.files = org.sound.files)
+
 
