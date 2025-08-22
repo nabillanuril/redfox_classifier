@@ -55,7 +55,6 @@ all_data <- purrr::map_dfr(
   }
 )
 
-
 all_data <- left_join(all_data, all_combinations, by = "combination") %>%
   mutate(Domain_Quality = paste0(Domain, "_", Quality),
          Domain_Label = paste0(Domain, "_", Label),
@@ -128,9 +127,7 @@ ggplot(
     ))
 
 
-
-
-# wilcoxon dartmoor-xc snr ####
+# wilcoxon dartmoor-xc ####
 all_data_wide <- all_data_long %>%
   pivot_wider(id_cols = c(Quality_Label, Metric, test_set),
               names_from = Domain, 
@@ -209,15 +206,7 @@ results_high_vs_low <- all_data_wide %>%
   group_by(Domain_Label, Metric) %>%
   summarise(
     test = list(wilcox.test(`High SNR`, `Low SNR`, paired = TRUE, exact = FALSE)),
-    .groups = "drop") %>%
-  mutate(
-    p.value = map_dbl(test, ~ .x$p.value),
-    statistic = map_dbl(test, ~ unname(.x$statistic)),
-    median_diff = map_dbl(test, ~ median(all_data_wide$`High SNR` - all_data_wide$`Low SNR`, na.rm = TRUE)),
-    p.adj = p.adjust(p.value, method = "BH")
-  ) %>%
-  select(-test)
-
+    .groups = "drop")
 
 
 # figure trend strong and weak label ####
@@ -272,7 +261,6 @@ ggplot(
   ) 
 
 
-
 # wilcoxon strong-weak label ####
 all_data_wide <- all_data_long %>%
   pivot_wider(id_cols = c(Domain_Quality, Metric, test_set),
@@ -286,7 +274,6 @@ results_strong_vs_weak <- all_data_wide %>%
   summarise(
     test = list(wilcox.test(`Strong Label`, `Weak Label`, paired = TRUE, exact = FALSE)),
     .groups = "drop")
-
 
 
 # All Metrics ####
@@ -390,4 +377,5 @@ ggplot(
     axis.text.x = element_text(hjust = 0.5),
     plot.title = element_text(hjust = 0.5),
   )
+
 
