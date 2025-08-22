@@ -246,7 +246,6 @@ cols_to_fix <- c("Common.Name", "View")
 seltab_noise_xc <- lapply(seltab_noise_xc, function(df) {
   if ("Common_Name" %in% names(df)) names(df)[names(df) == "Common_Name"] <- "Common.Name"
   for (col in cols_to_fix) {
-    if (!col %in% names(df)) df[[col]] <- rep(NA_character_, nrow(df))
     df[[col]] <- as.character(df[[col]])
   }
   df
@@ -341,3 +340,4 @@ dartmoor_noise <- seltab_noise_dr %>%
   mutate(channel = 1,
          clip.files = sound.files,
          sound.files = org.sound.files)
+
