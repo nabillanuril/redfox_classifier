@@ -8,6 +8,7 @@ library(yardstick)
 # PR curve ####
 dirs <- all_combinations$folder_path
 
+# load all data tables
 all_threshold <- purrr::map_dfr(
   dirs,
   function(folder_path) {
@@ -47,6 +48,7 @@ pr_by_comb <- df %>%
   group_by(combination) %>%
   pr_curve(truth, score)
 
+# visualise PR-curve
 ggplot(pr_by_comb, aes(x = recall, y = precision, colour = combination)) +
   geom_path(linewidth = 0.8) +
   coord_equal() +
@@ -61,10 +63,10 @@ ggplot(pr_by_comb, aes(x = recall, y = precision, colour = combination)) +
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
   coord_fixed(ratio = 1)
 
-# calculate ap by test set ####
+# calculate AP by training data combination ####
 # prepare data
 # set 1 as positive and 0 as negative
-df <- data_table %>%
+df <- all_threshold %>%
   mutate(
     truth = factor(Red.Fox_annotation, levels = c(1, 0)),
     score = Red.Fox_confidence
@@ -72,24 +74,9 @@ df <- data_table %>%
 
 # AP per combination × test_set (20 subsamples)
 ap_by_combo_test <- df %>%
-  group_by(combination, test_set) %>%
+  group_by(combination) %>%
   average_precision(truth, score, event_level = "first") %>%
   rename(AP = .estimate) %>%
   ungroup()
 
 view(ap_by_combo_test)
-
-# filter FN ####
-data_table_fn <- data_table %>% 
-  filter(Red.Fox_annotation == 1 & Red.Fox_confidence <= 0.05) %>%
-  distinct(across(-test_set))
-view(data_table_fn)
-
-# filter FP ####
-data_table_fp <- data_table %>% 
-  filter(Red.Fox_annotation == 0 & Red.Fox_confidence >= 0.05) %>%
-  distinct(across(-test_set))
-view(data_table_fp)
-
-# find out which experiment group these data belongs to
-# compile explainable reason why they are missed or why they were missclassified
