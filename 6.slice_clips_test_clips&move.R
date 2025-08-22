@@ -158,7 +158,7 @@ for (i in seq_along(folder_paths)) {
   test_set <- test_sets[[i]]
   class_col <- test_set$Common.Name
   
-  # Build output table (always 0-3)
+  # build output table (always 0-3)
   eval_df <- test_set %>%
     dplyr::mutate(
       `Start Time` = 0,
@@ -168,7 +168,7 @@ for (i in seq_along(folder_paths)) {
     ) %>%
     dplyr::select(`Start Time`, `End Time`, Class, `Begin Path`)
   
-  # Write to file in the SAME destination folder as the .wav files
+  # write to file in the SAME destination folder as the .wav files
   out_file <- file.path(dest_folder, "test_eval.txt")
   write.table(
     eval_df,
@@ -178,3 +178,4 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
