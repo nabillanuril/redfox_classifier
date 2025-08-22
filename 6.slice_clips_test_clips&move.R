@@ -5,9 +5,10 @@ library(warbleR)
 setwd("F:/MSc Ecology & Data Science Research")
 
 # distribution test set
-# fix table because they are all in different format
+# fix table because they are all in different formats
 fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
   needed_cols <- c("sound.files", "selec", "start", "end", "domain", "label", "path", "Common.Name")
+  # some columns might be missing in the noise df. Create respective columns and fill them with NA character
   for (col in needed_cols) if (!col %in% names(df)) df[[col]] <- NA_character_
   df$sound.files   <- as.character(df$sound.files)
   df$selec         <- as.character(df$selec)
@@ -18,7 +19,7 @@ fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
   df$path          <- as.character(df$path)
   df$Common.Name   <- as.character(df$Common.Name)
   # create Common.Name col and fill it with "nocall"
-  # this is to match with the BirdNET prediction during evaluation metrics
+  # this is to match the BirdNET prediction during evaluation metrics
   if (is_noise) {
     df$Common.Name <- "nocall"
     # Fix path for Dartmoor noise
@@ -188,4 +189,5 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
 
