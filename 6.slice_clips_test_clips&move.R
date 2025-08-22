@@ -29,6 +29,7 @@ fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
     }
     # Fix path for Xenocanto noise: extract only the directory
     if (any(df$domain == "Xenocanto")) {
+      # path contains full name, change it to dirname
       df$path[df$domain == "Xenocanto"] <- dirname(df$path[df$domain == "Xenocanto"])
     }
   } else if (all(is.na(df$Common.Name)) || all(df$Common.Name == "")) {
@@ -190,6 +191,7 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
 
 
 
