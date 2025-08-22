@@ -6,7 +6,7 @@ library(purrr)
 # calls and noise used to create training data are from Xeno-Canto recordings
 # calls and noise for training go to the "train_data" folder for training
 
-# join keys for antijoin
+# join keys for anti_join to keep training data separate from test data
 join_keys <- c("sound.files", "selec", "start", "end")
 
 xc_test_noise <- Pool_xc_noise
@@ -174,4 +174,5 @@ sample <- sample %>% selection_table(path = path_noise)
 cut_sels(sample, 
          path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/xc_lowsnr_strong/Noise")
+
 
