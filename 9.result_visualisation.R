@@ -1,7 +1,6 @@
 library(tibble)
 library(tidyverse)
 
-
 df <- tibble(
   Domain = c("dr", "xc"),
   Quality = c("highsnr", "lowsnr"),
@@ -29,6 +28,7 @@ all_combinations <- all_combinations %>%
 
 dirs <- all_combinations$folder_path
 
+# list all result_table in the folder and combine all df
 all_data <- purrr::map_dfr(
   dirs,
   function(folder_path) {
@@ -63,7 +63,7 @@ all_data <- left_join(all_data, all_combinations, by = "combination") %>%
          .after = combination) %>%
   relocate(Domain, Quality, Label, .after = Quality_Label)
 
-# Calculate mean for each metrics
+# Calculate the mean for each metric
 all_data_means <- all_data %>%
   group_by(combination) %>%
   summarise(mean_AUROC = mean(AUROC, na.rm = TRUE),
@@ -142,16 +142,7 @@ results_dr_vs_xc <- all_data_wide %>%
   group_by(Quality_Label, Metric) %>%
   summarise(
     test = list(wilcox.test(Dartmoor, `Xeno-Canto`, paired = TRUE, exact = FALSE)),
-    .groups = "drop") %>%
-  mutate(
-    p.value = map_dbl(test, ~ .x$p.value),
-    statistic = map_dbl(test, ~ unname(.x$statistic)),
-    median_diff = map_dbl(test, ~ median(all_data_wide$`Dartmoor` - all_data_wide$`Xeno-Canto`, na.rm = TRUE)),
-    p.adj = p.adjust(p.value, method = "BH")
-  ) %>%
-  select(-test)
-
-
+    .groups = "drop")
 
 
 # figure trend high snr and low snr ####
@@ -294,19 +285,11 @@ results_strong_vs_weak <- all_data_wide %>%
   group_by(Domain_Quality, Metric) %>%
   summarise(
     test = list(wilcox.test(`Strong Label`, `Weak Label`, paired = TRUE, exact = FALSE)),
-    .groups = "drop") %>%
-  mutate(
-    p.value = map_dbl(test, ~ .x$p.value),
-    statistic = map_dbl(test, ~ unname(.x$statistic)),
-    median_diff = map_dbl(test, ~ median(all_data_wide$`Strong Label` - all_data_wide$`Weak Label`, na.rm = TRUE)),
-    p.adj = p.adjust(p.value, method = "BH")
-  ) %>%
-  select(-test)
+    .groups = "drop")
 
 
 
-
-# overall trend ####
+# All Metrics ####
 all_data_long <- all_data %>%
   pivot_longer(
     cols = c(AP, AUROC, Precision, Recall, F1, Accuracy),
@@ -361,42 +344,7 @@ ggplot(
   ) 
 
 
-
-
-# 1. Filter your data for the two groups
-df_strong <- all_data %>% filter(combination == "dr_highsnr_strong")
-df_weak   <- all_data %>% filter(combination == "dr_highsnr_weak")
-
-# 2. Sort by csv_number to ensure pairing is correct
-df_strong <- df_strong %>% arrange(test_set)
-df_weak   <- df_weak %>% arrange(test_set)
-
-# 3. For each metric, perform Wilcoxon signed-rank test
-metrics <- c("AUROC", "Precision", "Recall", "F1", "AP", "Accuracy")
-
-wilcoxon_results <- lapply(metrics, function(metric) {
-  test <- wilcox.test(df_strong[[metric]], df_weak[[metric]], paired = TRUE, exact = FALSE)
-  data.frame(
-    metric = metric,
-    p.value = test$p.value,
-    statistic = test$statistic
-  )
-})
-
-# Combine results into a single data frame
-wilcoxon_df <- do.call(rbind, wilcoxon_results)
-print(wilcoxon_df)
-
-
-wilcox.test(
-  all_data %>% filter(combination == "dr_highsnr_strong") %>% pull(AUROC),
-  all_data %>% filter(combination == "dr_highsnr_weak") %>% pull(AUROC),
-  paired = TRUE,
-  conf.int = TRUE
-)
-
-
-# Decision tree ####
+# overall AP ####
 all_data_long <- all_data %>%
   pivot_longer(
     cols = c(AP),
@@ -442,3 +390,4 @@ ggplot(
     axis.text.x = element_text(hjust = 0.5),
     plot.title = element_text(hjust = 0.5),
   )
+
