@@ -84,16 +84,14 @@ sampled_noise$sound.files <- factor(sampled_noise$sound.files)
 
 # noise for mixing
 sampled_noise_1 <- sampled_noise %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-sampled_noise <- sampled_noise_1 %>% selection_table()
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+sampled_noise <- sampled_noise_1 %>% selection_table(path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_high snr_weak_noise")
 
 # noise for training
 sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-selection_table(sampled_noise)
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+selection_table(sampled_noise, path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_highsnr_weak/Noise")
 
 # dartmoor, weak, low SNR ####
@@ -142,16 +140,14 @@ sampled_noise$sound.files <- factor(sampled_noise$sound.files)
 
 # noise for mixing
 sampled_noise_1 <- sampled_noise %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-sampled_noise <- sampled_noise_1 %>% selection_table()
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+sampled_noise <- sampled_noise_1 %>% selection_table(path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_weak_noise")
 
 # noise for training
 sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-selection_table(sampled_noise)
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+selection_table(sampled_noise, path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_lowsnr_weak/Noise")
 
 # dartmoor, strong, high SNR ####
@@ -200,16 +196,14 @@ sampled_noise$sound.files <- factor(sampled_noise$sound.files)
 
 # noise for mixing
 sampled_noise_1 <- sampled_noise %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-sampled_noise <- sampled_noise_1 %>% selection_table()
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+sampled_noise <- sampled_noise_1 %>% selection_table(path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_high snr_strong_noise")
 
 # noise for training
 sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-selection_table(sampled_noise)
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+selection_table(sampled_noise, path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_highsnr_strong/Noise")
 
 # dartmoor, strong, low SNR ####
@@ -258,15 +252,12 @@ sampled_noise$sound.files <- factor(sampled_noise$sound.files)
 
 # noise for mixing
 sampled_noise_1 <- sampled_noise %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-sampled_noise <- sampled_noise_1 %>% selection_table()
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+sampled_noise <- sampled_noise_1 %>% selection_table(path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_strong_noise")
 
 # noise for training
 sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) %>% slice_sample(n = 240)
-setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
-selection_table(sampled_noise)
-cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
-
+selection_table(sampled_noise, path = path_noise)
+cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_lowsnr_strong/Noise")
