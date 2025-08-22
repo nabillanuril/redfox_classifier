@@ -2,6 +2,15 @@ library(dplyr)
 library(warbleR)
 library(purrr)
 
+# this script is for curating training data for the Dartmoor domain
+# calls used to create training data are from Xeno-Canto recordings
+# noise used to create augmented calls and background noise is from Dartmoor recordings
+# filtered calls go to the "augment_data_train" folder to be mixed with Dartmoor background noise in Python (next script)
+# Dartmoor noise for augmented data also goes to the "augment_data_train" folder to be mixed with Xeno-Canto calls in Python (next script)
+# results of augmentation will later go to the "train_data" folder for training (explained further in the Python script)
+# Dartmoor noise for training goes to the "train_data" folder for training
+
+
 xc_test_call <- bind_rows(
   pool_whine_high,
   pool_whine_low,
@@ -16,7 +25,9 @@ xc_test_call <- bind_rows(
 dr_test_noise <- bind_rows(all_noise_prev,
                            Pool_dartmoor_noise)
 
+
 # Join keys
+# will be used later with anti_join to keep training and test data separate
 join_keys_char <- c("sound.files", "selec")
 join_keys_num  <- c("start", "end")
 join_keys      <- c(join_keys_char, join_keys_num)
@@ -261,4 +272,5 @@ sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) 
 selection_table(sampled_noise, path = path_noise)
 cut_sels(sampled_noise, path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_lowsnr_strong/Noise")
+
 
