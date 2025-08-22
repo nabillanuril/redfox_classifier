@@ -34,6 +34,10 @@ xc_test_call <- xc_test_call %>%
     across(all_of(join_keys_num),  as.numeric)
   )
 
+# define path
+path_call  <- file.path("F:/MSc Ecology & Data Science Research", unique(public_domain$path))
+path_noise <- file.path("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
+
 # dartmoor, weak, high SNR ####
 # whine
 set.seed(5)
@@ -45,10 +49,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=5) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_high snr_weak_call")
 
 # bark
@@ -61,10 +64,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=5) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_high snr_weak_call")
 
 # sample noise
@@ -105,10 +107,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=6) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_weak_call")
 
 # bark
@@ -121,10 +122,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=6) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_weak_call")
 
 # sample noise
@@ -165,10 +165,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=7) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_high snr_strong_call")
 
 # bark
@@ -181,10 +180,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=7) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_high snr_strong_call")
 
 # sample noise
@@ -225,10 +223,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=8) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
-sample <- sample %>% selection_table()
+sample <- sample %>% selection_table(path = path_call)
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_strong_call")
 
 # bark
@@ -241,10 +238,9 @@ sample <- public_domain %>%
   anti_join(xc_test_call, by = join_keys) %>%
   sample_overlap(n=8) %>%
   slice_sample(n = 120)
-setwd(file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)))
 sample <- sample %>% selection_table()
 cut_sels(sample, 
-         path = file.path("F:/MSc Ecology & Data Science Research", unique(sample$path)), 
+         path = path_call, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. augment data_train/Wilcoxon/Dartmoor_low snr_strong_call")
 
 # sample noise
@@ -272,4 +268,5 @@ sampled_noise_2 <- sampled_noise %>% anti_join(sampled_noise_1, by = join_keys) 
 setwd("F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise")
 selection_table(sampled_noise)
 cut_sels(sampled_noise, path = "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise", 
+
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/dr_lowsnr_strong/Noise")
