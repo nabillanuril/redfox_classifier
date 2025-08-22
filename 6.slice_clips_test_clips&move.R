@@ -6,7 +6,7 @@ setwd("F:/MSc Ecology & Data Science Research")
 
 # distribution test set
 # fix table because they are all in different formats
-fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
+fix_columns <- function(df) {
   needed_cols <- c("sound.files", "selec", "start", "end", "domain", "label", "path", "Common.Name")
   # some columns might be missing in the noise df. Create respective columns and fill them with NA character
   # e.g. Pool_dartmoor_noise
@@ -21,21 +21,18 @@ fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
   df$Common.Name   <- as.character(df$Common.Name)
   # create Common.Name col and fill it with "nocall"
   # this is to match the BirdNET prediction during evaluation metrics
-  if (is_noise) {
-    df$Common.Name <- "nocall"
-    # Fix path for Dartmoor noise
-    df$path[df$domain == "Dartmoor"] <- "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise"
-    # Fix path for Xenocanto noise: extract only the directory
-    # path contains full name, change it to dirname
-    df$path[df$domain == "Xenocanto"] <- dirname(df$path[df$domain == "Xenocanto"])
-  } else if (all(is.na(df$Common.Name)) || all(df$Common.Name == "")) {
-    df$Common.Name <- call_label
-  }
+  df$Common.Name <- "nocall"
+  # Fix path for Dartmoor noise
+  df$path[df$domain == "Dartmoor"] <- "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise"
+  # Fix path for Xenocanto noise: extract only the directory
+  # path contains full name, change it to dirname
+  df$path[df$domain == "Xenocanto"] <- dirname(df$path[df$domain == "Xenocanto"])
   return(df)
 }
 
-Pool_xc_noise       <- fix_columns(Pool_xc_noise, is_noise = TRUE)
-Pool_dartmoor_noise <- fix_columns(Pool_dartmoor_noise, is_noise = TRUE)
+# apply function
+Pool_xc_noise       <- fix_columns(Pool_xc_noise)
+Pool_dartmoor_noise <- fix_columns(Pool_dartmoor_noise)
 
 # sample 15 each for 20 times
 set.seed(26)
@@ -92,7 +89,7 @@ augment_folder_map <- list(
   Bark_Low   = "F:/MSc Ecology & Data Science Research/3. augment data/Wilcoxon/Dartmoor_bark_low snr_call"
 )
 
-# direct dartmoor/britishlib file into test file folder while xenoo canto file into xeno canto folder
+# direct dartmoor/britishlib file into test file folder while xeno canto file into xeno canto folder
 for (i in seq_along(folder_paths)) {
   dest_folder <- folder_paths[i]
   test_set <- test_sets[[i]]
@@ -103,7 +100,7 @@ for (i in seq_along(folder_paths)) {
   
   # ensure freq cols exist and have no NAs (sampling rate: 48 kHz)
   # dartmoor noise does not have freq cols because I splitted them using warbleR
-  # not directly from raven pro
+  # not directly from Raven Pro
   if (!"bottom.freq" %in% names(test_set)) test_set$bottom.freq <- 0
   if (!"top.freq" %in% names(test_set))    test_set$top.freq    <- 24
   test_set$bottom.freq[is.na(test_set$bottom.freq)] <- 0
@@ -187,6 +184,7 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
 
 
 
