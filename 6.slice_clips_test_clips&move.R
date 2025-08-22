@@ -93,7 +93,8 @@ augment_folder_map <- list(
 for (i in seq_along(folder_paths)) {
   dest_folder <- folder_paths[i]
   test_set <- test_sets[[i]]
-  
+
+  # check if clip.files present. If not, create clip.files from sound.files and selec
   if (!"clip.files" %in% names(test_set)) {
     test_set$clip.files <- paste0(sub("\\.wav$", "", test_set$sound.files), "-", test_set$selec, ".wav")
   }
@@ -108,7 +109,7 @@ for (i in seq_along(folder_paths)) {
   
   for (j in seq_len(nrow(test_set))) {
     row <- test_set[j, , drop = FALSE]
-    # cut britishlib / dartmoor calls straight to the test set files
+    # cut britishlib / dartmoor call straight to the test set files
     if (row$domain %in% c("Britishlib", "Dartmoor") && row$Common.Name != "nocall") {
       the_path <- row$path
       sel_tab <- selection_table(X = row, files = as.character(row$sound.files), path = the_path)
@@ -116,8 +117,7 @@ for (i in seq_along(folder_paths)) {
       next
     }
     # cut dartmoor noise to test set files
-    if (!is.null(row$Common.Name) && row$Common.Name == "nocall" &&
-        grepl("Dartmoor", row$domain, ignore.case = TRUE)) {
+    if if (row$Common.Name == "nocall" && row$domain == "Dartmoor") {
       noise_path <- "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise"
       sel_tab <- selection_table(X = row, files = as.character(row$sound.files), path = noise_path)
       cut_sels(X = sel_tab, path = noise_path, dest.path = dest_folder)
@@ -133,6 +133,7 @@ for (i in seq_along(folder_paths)) {
       # copy augmented clip to test set folder if any
       if (!is.null(aug_folder) && file.exists(src_file_aug)) {
         file.copy(src_file_aug, file.path(dest_folder, basename(src_file_aug)), overwrite = TRUE)
+        # if XC recordings are not in augmented folders, cut from Xeno Canto recordings
       } else {
         the_path <- row$path
         sel_tab <- selection_table(X = row, files = as.character(row$sound.files), path = the_path)
@@ -155,8 +156,6 @@ for (i in seq_along(folder_paths)) {
 for (i in seq_along(folder_paths)) {
   dest_folder <- folder_paths[i]
   test_set <- test_sets[[i]]
-  test_set$clip.files <- paste0(sub("\\.wav$", "", test_set$sound.files), "-", test_set$selec, ".wav")
-  
   # Assign "nocall" if it's noise, else as in Common.Name
   # if Common.Name is missing, fallback to "Red Fox"
   class_col <- ifelse(
@@ -184,6 +183,7 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
 
 
 
