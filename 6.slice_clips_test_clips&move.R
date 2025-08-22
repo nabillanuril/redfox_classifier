@@ -24,8 +24,8 @@ fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
   if (is_noise) {
     df$Common.Name <- "nocall"
     # Fix path for Dartmoor noise
-    if (any(df$domain == "Dartmoor" | is.na(df$domain))) {
-      df$path[df$domain == "Dartmoor" | is.na(df$domain)] <- "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise"
+    if (any(df$domain == "Dartmoor")) {
+      df$path[df$domain == "Dartmoor"] <- "F:/MSc Ecology & Data Science Research/1. Dartmoor 2023_noise"
     }
     # Fix path for Xenocanto noise: extract only the directory
     if (any(df$domain == "Xenocanto")) {
@@ -191,6 +191,7 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
 
 
 
