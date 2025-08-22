@@ -17,7 +17,7 @@ fix_columns <- function(df, is_noise = FALSE, call_label = "Red Fox") {
   df$label         <- as.character(df$label)
   df$path          <- as.character(df$path)
   df$Common.Name   <- as.character(df$Common.Name)
-  # assign Noise as "nocall"
+  # create Common.Name col and fill it with "nocall"
   # this is to match with the BirdNET prediction during evaluation metrics
   if (is_noise) {
     df$Common.Name <- "nocall"
@@ -188,3 +188,4 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
+
