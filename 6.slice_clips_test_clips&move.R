@@ -156,12 +156,7 @@ for (i in seq_along(folder_paths)) {
 for (i in seq_along(folder_paths)) {
   dest_folder <- folder_paths[i]
   test_set <- test_sets[[i]]
-  # Assign "nocall" if it's noise, else as in Common.Name
-  # if Common.Name is missing, fallback to "Red Fox"
-  class_col <- ifelse(
-    !is.na(test_set$Common.Name) & tolower(test_set$Common.Name) == "nocall",
-    "nocall", "Red Fox"
-  )
+  class_col <- test_set$Common.Name
   
   # Build output table (always 0-3)
   eval_df <- test_set %>%
@@ -183,11 +178,3 @@ for (i in seq_along(folder_paths)) {
     quote = FALSE
   )
 }
-
-
-
-
-
-
-
-
