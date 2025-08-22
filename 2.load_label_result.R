@@ -4,15 +4,15 @@ library(stringr)
 library(tibble)
 
 # this script is for:
-# 1. loading all selection tables if they are already labelled
-# 2. automatically creating selection tables for Dartmoor noise
-# 3. generating weak labels from selection tables
+# 1. Loading all selection tables if they are already labelled
+# 2. Automatically creating selection tables for Dartmoor noise
+# 3. Generating weak labels from selection tables
 
 # set working directory
 setwd("F:/MSc Ecology & Data Science Research")
 
 # XC red fox strong  label ####
-# list all selection table and put selection table name as wav sound.files inside df
+# list all selection tables and put the selection table name as wav sound.files inside df
 file_paths <- list.files(
   path        = "1. Xenocanto_label",
   pattern     = "\\.Table.1.selections.txt$",
@@ -24,7 +24,7 @@ sound_files <- basename(file_paths) %>%
 
 sound_paths <- file.path("1. Xenocanto_foreground_wav", sound_files) %>% dirname()
 
-# read and adjust selection table from raven pro to match the table format of warbleR
+# read and adjust the selection table from Raven Pro to match the table format of warbleR
 raven2warbleR <- function(filepath, soundfiles, soundpath, domain) {
   read.table(filepath,
              sep = "\t",
@@ -58,7 +58,7 @@ seltab_sp_xc <- mapply(raven2warbleR, file_paths, sound_files,
 # set working directory
 setwd("F:/MSc Ecology & Data Science Research")
 
-# list all selection table and put selection table name as wav sound.files inside df
+# list all selection tables and put the selection table name as wav sound.files inside df
 file_paths <- list.files(
   path        = "1. Britishlib_label",
   pattern     = "\\.Table.1.selections.txt$",
@@ -71,14 +71,13 @@ sound_files <- basename(file_paths) %>%
 sound_paths <- file.path("1. Britishlib_red fox", sound_files) %>% dirname()
 
 # combine selection table into one list
-# raven2warbleR is already denfined above
 seltab_sp_bl <- mapply(raven2warbleR, file_paths, sound_files, 
                        sound_paths, "Britishlib", SIMPLIFY = FALSE)
 
 
 
 # DR red fox strong label ####
-# list all selection table and put selection table name as wav sound.files inside df
+# list all selection tables and put the selection table name as wav sound.files inside df
 setwd("F:/MSc Ecology & Data Science Research")
 
 file_paths <- list.files(
@@ -105,7 +104,6 @@ sound_paths <- tibble(sound_file = sound_files) %>%
 
 
 # combine selection table into one list
-# raven2warbleR is already denfined above
 seltab_sp_dr <- mapply(raven2warbleR, file_paths, sound_files, 
                        sound_paths, "Dartmoor", SIMPLIFY = FALSE)
 
@@ -113,8 +111,7 @@ seltab_sp_dr <- mapply(raven2warbleR, file_paths, sound_files,
 
 # XC red fox weak label ####
 strong2weak <- function(df, dur = 3) {
-  # use pre-defined df column names so the function can use data frames with
-  # specific column names as input
+  # use pre-defined df column names so the function can use data frames with specific column names as input
   start <- df$start
   end <- df$end
   files <- df$sound.files
@@ -225,7 +222,7 @@ seltab_weak_dr <- lapply(seltab_sp_dr, strong2weak)
 # XC noise ####
 # always set wd when you work with warbler
 setwd("F:/MSc Ecology & Data Science Research")
-# list all selection table and put selection table name as wav sound.files inside df
+# list all selection tables and put the selection table name as wav sound.files inside df
 file_paths <- list.files(
   path        = "1. Xenocanto_label",
   pattern     = "\\.Table.2.selections.txt$",
@@ -238,10 +235,10 @@ sound_files <- basename(file_paths) %>%
 sound_paths <- file.path("1. Xenocanto_foreground_wav", sound_files)
 
 # combine selection table into one list
-# raven2warbleR is already denfined above
 seltab_noise_xc <- mapply(raven2warbleR, file_paths, sound_files, 
                           sound_paths, "Xenocanto", SIMPLIFY = FALSE)
 
+# fix columns
 cols_to_fix <- c("Common.Name", "View")
 seltab_noise_xc <- lapply(seltab_noise_xc, function(df) {
   if ("Common_Name" %in% names(df)) names(df)[names(df) == "Common_Name"] <- "Common.Name"
@@ -271,10 +268,10 @@ sound_files <- basename(file_paths) %>%
 sound_paths <- rep("1. Britishlib_red fox", length(sound_files))
 
 # combine selection tables into one list
-# raven2warbleR is already defined above
 seltab_noise_bl <- mapply(raven2warbleR, file_paths, sound_files, 
                           sound_paths, "Britishlib", SIMPLIFY = FALSE)
 
+# fix columns
 seltab_noise_bl <- lapply(seltab_noise_bl, function(df) {
   for (col in cols_to_fix) {
     df[[col]] <- as.character(df[[col]])
@@ -294,7 +291,7 @@ fox_active <- readxl::read_xlsx("1. Dartmoor 2023_red fox/fox_active.xlsx")
 
 # generate a new name for each recording with the site name as prefix,
 # because some recordings have the same name (they were named by date and time of survey)
-# without renaming, the files would overwrite each other when moved/copied into a new folder
+# without renaming, the files would overwrite each other when being moved/copied into a new folder
 fox_active$recording <- paste(fox_active$site, fox_active$recording, sep = "_")
 
 # filter out files without red fox calls
@@ -339,5 +336,6 @@ dartmoor_noise <- seltab_noise_dr %>%
   mutate(channel = 1,
          clip.files = sound.files,
          sound.files = org.sound.files)
+
 
 
