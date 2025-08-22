@@ -6,9 +6,9 @@ library(rstatix)
 # set working directory
 setwd("F:/MSc Ecology & Data Science Research")
 
-# calculate SNR for consecutive call with distance < 0.02 
+# calculate SNR for consecutive calls with distance < 0.02 
 # calculate distance between calls and assign those with less than 0.02s 
-# time difference into a column of group id
+# time difference into a column of group ID
 red_foxSNR <- function(df_list, mar = 0.02, type = 2){
   
   seltab_list <- lapply(df_list, function(df) {
@@ -17,22 +17,22 @@ red_foxSNR <- function(df_list, mar = 0.02, type = 2){
       mutate(
         time_gap = start - lag(end),
         time_gap = ifelse(is.na(time_gap), mar, time_gap), # Fix NA
-        # cumsum here calculate how many TRUE present with given condition
-        # so calls with time gap less than 0.02 will be counted as FALSE and will be in the
+        # cumsum here calculates how many TRUE present with the  given condition
+        # so calls with a time gap less than 0.02 will be counted as FALSE and will be in the
         # same group as the previous TRUE. Those in the same group will have similar SNR
         group_id = cumsum(time_gap >= mar)
       )
   })
   
-  # merge call in the same group id into one window
+  # merge calls in the same group ID into one window
   merged <- lapply(seltab_list, function(df) {
     df %>%
-      # grouping allows similar calculation across group member
+      # grouping allows similar calculations across group members
       group_by(group_id, sound.files, channel, path) %>%
       summarise(
         start = min(start),
         end = max(end),
-        # create a new select column that has the value of group id
+        # create a new select column that has the value of group ID
         # to be recognised by warbleR
         selec = first(group_id),
         # drop group after grouping
@@ -40,7 +40,7 @@ red_foxSNR <- function(df_list, mar = 0.02, type = 2){
       )
   })
   
-  # calculate snr for the new window
+  # calculate SNR for the new window
   group_snr <- lapply(seq_along(merged), function(i){
     sig2noise(
       X = merged[[i]], 
@@ -50,7 +50,7 @@ red_foxSNR <- function(df_list, mar = 0.02, type = 2){
     )
   })
   
-  # get the group snr attached to each overlapping call
+  # get the group SNR attached to each overlapping call
   df_list_snr <- lapply(seq_along(seltab_list), function(i) {
     df <- seltab_list[[i]]
     snr_df <- group_snr[[i]]
@@ -87,17 +87,17 @@ public_snr <- xc_snr %>% bind_rows()
 # get summary stats for public_domain
 get_summary_stats(public_snr)
 
-# check how many barks and whines you have right now
+# filter barks and whines
 site_bark <- site_snr %>% filter(Call.Type == "Bark")
 site_whine <- site_snr %>% filter(Call.Type == "Whine")
 public_bark <- public_snr %>% filter(Call.Type == "Bark")
 public_whine <- public_snr %>% filter(Call.Type == "Whine")
 
-# split SNR to high and low group by the mean
+# split SNR to high and low groups by the mean
 SNR_mean <- mean(public_snr$SNR, na.rm = TRUE)
 print(SNR_mean)
 
-# test if the different group is different from each other
+# test if the different groups are different from each other
 public_snr <- public_snr %>% 
   mutate(SNR_cat = ifelse(SNR < SNR_mean, "Low", 
                           ifelse(SNR > SNR_mean, "High", NA_character_)))
@@ -133,5 +133,6 @@ site_domain <- df_weak_dr %>%
   merge(site_strong, by = c("sound.files", "selec")) %>% 
   bind_rows(site_snr)
 
-# save the seltab_list as excel file so that it can be read in python
+# save the seltab_list as an Excel file so that it can be read in Python
 write.xlsx(public_domain, "F:/MSc Ecology & Data Science Research/Metadata/public_domainSNR.xlsx")
+
