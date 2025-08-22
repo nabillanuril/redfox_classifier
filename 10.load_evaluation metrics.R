@@ -72,7 +72,7 @@ df <- all_threshold %>%
     score = Red.Fox_confidence
   )
 
-# AP per combination × test_set (20 subsamples)
+# AP per combination
 ap_by_combo_test <- df %>%
   group_by(combination) %>%
   average_precision(truth, score, event_level = "first") %>%
@@ -80,3 +80,4 @@ ap_by_combo_test <- df %>%
   ungroup()
 
 view(ap_by_combo_test)
+
