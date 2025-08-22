@@ -13,7 +13,7 @@ xc_test_noise <- Pool_xc_noise
 
 # define path
 path_call  <- file.path("F:/MSc Ecology & Data Science Research", unique(public_domain$path))
-path_noise <- file.path("F:/MSc Ecology & Data Science Research", unique(dirname(sample$path)))
+path_noise <- file.path("F:/MSc Ecology & Data Science Research", unique(dirname(xc_noise$path)))
 
 # xeno canto, weak, high SNR ####
 # whine
@@ -174,5 +174,6 @@ sample <- sample %>% selection_table(path = path_noise)
 cut_sels(sample, 
          path = path_noise, 
          dest.path = "F:/MSc Ecology & Data Science Research/3. train_data/1. Wilcoxon/xc_lowsnr_strong/Noise")
+
 
 
