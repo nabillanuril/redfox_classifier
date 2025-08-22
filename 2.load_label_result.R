@@ -53,6 +53,50 @@ raven2warbleR <- function(filepath, soundfiles, soundpath, domain) {
 seltab_sp_xc <- mapply(raven2warbleR, file_paths, sound_files, 
                        sound_paths, "Xenocanto", SIMPLIFY = FALSE)
 
+# merge bark and whine if separated by less than 0.02 seconds
+# the function below merges bark with adjacent bark, and whine with adjacent whine,
+# while keeping bark and whine separate
+merge_bark_whine_bouts <- function(df, gap = 0.02) {
+  wanted_types <- c("Bark", "Whine")
+  # check if df in the list has bark and/or whine
+  present_types <- intersect(unique(df$Call.Type), wanted_types)
+  if (length(present_types) == 0) return(as.data.frame(df))
+  merged <- df %>%
+    filter(Call.Type %in% wanted_types) %>%
+    arrange(Call.Type, start) %>%
+    group_by(Call.Type) %>%
+    mutate(
+      time_gap = start - lag(end, default = first(start)),
+      group = cumsum(time_gap > gap | is.na(time_gap))
+    ) %>%
+    group_by(Call.Type, group) %>%
+    summarise(
+      selec = first(selec),
+      View = first(View),
+      channel = first(channel),
+      start = min(start),
+      end = max(end),
+      bottom.freq = min(bottom.freq),
+      top.freq = max(top.freq),
+      Common.Name = first(Common.Name),
+      Call.Type = first(Call.Type),
+      sound.files = first(sound.files),
+      domain = first(domain),
+      path = first(path),
+      label = first(label),
+      .groups = "drop"
+    )
+  
+  untouched <- df %>% filter(!Call.Type %in% wanted_types)
+  
+  # combine, sort, and convert to base data.frame
+  result <- bind_rows(merged, untouched) %>%
+    arrange(start)
+  
+  as.data.frame(result)
+}
+
+seltab_sp_xc <- purrr::map(seltab_sp_xc, merge_bark_whine_bouts)
 
 # BL red fox ####
 # set working directory
@@ -336,6 +380,7 @@ dartmoor_noise <- seltab_noise_dr %>%
   mutate(channel = 1,
          clip.files = sound.files,
          sound.files = org.sound.files)
+
 
 
 
