@@ -27,13 +27,12 @@ sample_overlap <- function(df, n = 26) {
 # random sample
 set.seed(26)
 # selec column does not exist as a result of split_sound_files
-# you have to create your own select table
 # add selec and channel column
 sampled_noise <- dartmoor_noise %>%
   group_by(month, site, date) %>%
   slice_sample(n = 6) %>%
   ungroup()
-# move all files into new folder
+# move all files into a new folder
 setwd("F:/MSc Ecology & Data Science Research")
 sampled_noise$dest_file <- file.path("1. Dartmoor 2023_noise", basename(sampled_noise$sound.files))
 copy_wav <- file.copy(from = sampled_noise$source_file, to = sampled_noise$dest_file)
@@ -72,7 +71,7 @@ if(n_needed > 0){
   pool_whine_high_xc <- sample_xc
 } else {
   pool_whine_high <- sample_1 %>% slice_sample(n = 30)
-  # No Xenocanto samples needed, so set empty data frame for clarity
+  # No Xenocanto samples needed, so set an empty data frame for clarity
   pool_whine_high_xc <- pool_whine_high[0,]
 }
 
@@ -132,7 +131,7 @@ if(n_needed > 0){
   pool_bark_high_xc <- sample_xc
 } else {
   pool_bark_high <- sample %>% slice_sample(n = 30)
-  # save empty data if xeno canto samples are not needed
+  # save empty data if Xeno Canto samples are not needed
   pool_bark_high_xc <- pool_bark_high[0,]
 }
 
@@ -183,7 +182,7 @@ if(n_needed > 0){
   pool_whine_low_xc <- sample_xc
 } else {
   pool_whine_low <- sample %>% slice_sample(n = 30)
-  # save empty data if xeno canto samples are not needed
+  # save empty data if Xeno Canto samples are not needed
   pool_whine_low_xc <- pool_whine_low[0,]
 }
 
@@ -234,7 +233,7 @@ if(n_needed > 0){
   pool_bark_low_xc <- sample_xc
 } else {
   pool_bark_low <- sample %>% slice_sample(n = 30)
-  # save empty data if xeno canto samples are not needed
+  # save empty data if Xeno Canto samples are not needed
   pool_bark_low_xc <- pool_bark_low[0,]
 }
 
@@ -344,17 +343,17 @@ call_keys <- public_domain %>%
 for(i in seq_len(nrow(xc_noise))) {
   this_sf <- xc_noise$sound.files[i]
   this_sel <- xc_noise$selec[i]
-  
-  while(nrow(filter(call_keys, sound.files == this_sf, selec == this_sel)) > 0 ||
-        nrow(filter(xc_noise[seq_len(i - 1), ], sound.files == this_sf, selec == this_sel)) > 0) {
-    # find next available selec (max existing + 1, or fill in gap)
+  # filter similar sound.files and selec in both public_domain and xc_noise
+  while(nrow(filter(call_keys, sound.files == this_sf, selec == this_sel)) > 0) {
+    # if found, find next available selec
     used_sel <- c(
+      # pull similar all selec values
       call_keys %>% filter(sound.files == this_sf) %>% pull(selec),
       xc_noise %>% filter(sound.files == this_sf) %>% pull(selec)
     )
-    used_sel_int <- suppressWarnings(as.integer(used_sel))
-    used_sel_int <- used_sel_int[!is.na(used_sel_int)]
-    new_sel <- if(length(used_sel_int) == 0) 1 else max(used_sel_int) + 1
+    used_sel_int <- as.integer(used_sel)
+    # find the maximum selec values of similar recording and add 1
+    new_sel <- max(used_sel_int) + 1
     this_sel <- as.character(new_sel)
     xc_noise$selec[i] <- this_sel
   }
@@ -367,4 +366,5 @@ xc_noise <- xc_noise %>%
   )
 
 Pool_xc_noise <- xc_noise %>% 
+
   slice_sample(n = 120)
